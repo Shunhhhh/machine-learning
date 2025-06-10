@@ -16,6 +16,9 @@ from model.svm import PCASVMClassifier
 from model.knn import StandardizedKNNClassifier
 import seaborn as sns
 
+plt.rcParams['font.sans-serif']=['SimHei'] #用来正常显示中文标签
+plt.rcParams['axes.unicode_minus'] = False #用来正常显示负号
+
 # 加载数据并对数据进行初步分析
 train_data = pd.read_csv("train.csv")
 test_data = pd.read_csv("test.csv")
@@ -45,13 +48,33 @@ train_data.describe(include=['O'])
 # 对一些类别特征进行进一步分析，观察其与是否生存之间的相关程度
 train_data[['Pclass', 'Survived']].groupby(['Pclass']).mean().sort_values(by='Survived', ascending=False)
 
+sns.barplot(x='Pclass', y='Survived', data=train_data)
+plt.title('Survival Rate by Pclass')
+plt.show()
+
 train_data[['Sex', 'Survived']].groupby(['Sex']).mean().sort_values(by='Survived', ascending=False)
+
+sns.barplot(x='Sex', y='Survived', data=train_data)
+plt.title('Survival Rate by Sex')
+plt.show()
 
 train_data[['SibSp', 'Survived']].groupby(['SibSp']).mean().sort_values(by='Survived', ascending=False)
 
+sns.barplot(x='SibSp', y='Survived', data=train_data)
+plt.title('Survival Rate by SibSp')
+plt.show()
+
 train_data[['Parch', 'Survived']].groupby(['Parch']).mean().sort_values(by='Survived', ascending=False)
 
+sns.barplot(x='Parch', y='Survived', data=train_data)
+plt.title('Survival Rate by Parch')
+plt.show()
+
 train_data[['Embarked', 'Survived']].groupby(['Embarked']).mean().sort_values(by='Survived', ascending=False)
+
+sns.barplot(x='Embarked', y='Survived', data=train_data)
+plt.title('Survival Rate by Embarked')
+plt.show()
 
 # 对一些类别数据进行简单的可视化
 plt.scatter(x=train_data["Age"], y=train_data["Fare"], c=train_data["Survived"])
