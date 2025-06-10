@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 from model.xgb import XGBoostOptimizer
 from model.svm import PCASVMClassifier
 from model.knn import StandardizedKNNClassifier
+import seaborn as sns
 
 # 加载数据并对数据进行初步分析
 train_data = pd.read_csv("train.csv")
@@ -25,6 +26,15 @@ alldata = pd.concat([train_data, test_data], axis = 0, ignore_index = True)
 
 print(f"训练集有{len(train_data)}个样本数据，测试集有{len(test_data)}样本数据")
 print(f"总共有{len(alldata)}个样本数据")
+
+# 查看每列缺失值数量
+print(alldata.isnull().sum())
+
+# 可视化缺失值分布
+plt.figure(figsize=(10, 6))
+sns.heatmap(alldata.isnull(), cbar=False, cmap='viridis')
+plt.title('Missing Values Heatmap')
+plt.show()
 
 # 对样本数值数据进行更详细观察，得出其分布特征
 # round(train_data.describe(percentiles=[.5, .6, .7, .8, .9,]), 2)
@@ -96,7 +106,6 @@ plt.ylabel("Fare")
 plt.title("票价，等级分布图")
 plt.legend(title='Pclass')
 plt.show()
-
 
 # 每位乘客实际支付的票价（总票价除以同票人数）
 alldata['fare_p'] = alldata.Fare / alldata.ticket_group_count
