@@ -48,8 +48,8 @@ class StandardizedKNNClassifier:
         :param y_val: 验证集标签
         """
         y_pred = self.predict(X_val)
-        print("Accuracy:", accuracy_score(y_val, y_pred))
-        print("\nClassification Report:")
+        print("KNN Accuracy:", accuracy_score(y_val, y_pred))
+        print("\nKNN Classification Report:")
         print(classification_report(y_val, y_pred))
         return y_pred
 

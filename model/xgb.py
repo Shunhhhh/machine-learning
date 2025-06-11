@@ -46,31 +46,31 @@ class XGBoostOptimizer:
         self.best_params = best_params
         return best_params
 
-    def train_best_model(self):
+    def train_best_model(self, evals_result, best_params=None, num_round=200, early_stopping=30, eval_round=10):
+        self.best_params = best_params
         if self.best_params is None:
             raise ValueError("请先调用 search_best_params 找到最佳参数")
-
         # 添加额外参数
         final_params = self.best_params.copy()
         final_params.update({
             'tree_method': 'hist',
             'device': 'cuda:1',
-            'objective': 'binary:logistic',
-            'eval_metric': 'logloss'
+            'objective': 'binary:logistic',  # 二分类任务，输出概率值
+            'eval_metric': 'logloss' # 对数损失
         })
-
         bst = xgb_train(
             params=final_params,
             dtrain=self.dtrain,
-            num_boost_round=200,
-            early_stopping_rounds=100,
-            evals=[(self.dval, 'eval')],
-            verbose_eval=10
+            num_boost_round=num_round,
+            early_stopping_rounds=early_stopping, # 早停
+            evals=[(self.dtrain, 'train'), (self.dval, 'eval')],
+            verbose_eval=eval_round, # 10轮打印一次
+            evals_result=evals_result  # 记录 loss
         )
 
         self.bst = bst
         print("Best iteration:", bst.best_iteration)
-        return bst
+        return bst, evals_result
 
     def evaluate_model(self):
         if self.bst is None:

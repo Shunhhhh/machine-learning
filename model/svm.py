@@ -21,18 +21,16 @@ class PCASVMClassifier:
             ('svm', SVC(C=C, kernel=kernel, gamma=gamma))
         ])
 
-    def apply_pca(self, X_train, X_val):
+    def apply_pca(self, X_train):
         """
         应用 PCA 到训练集和验证集
         :param X_train: 训练集特征
-        :param X_val: 验证集特征
         :return: 降维后的训练集、验证集、PCA 模型
         """
         pca = PCA(n_components=self.n_components)
         X_train_pca = pca.fit_transform(X_train)
-        X_val_pca = pca.transform(X_val)
         self.pca = pca
-        return X_train_pca, X_val_pca
+        return X_train_pca
 
     def build_model(self, C=1.0, kernel='rbf', gamma='scale'):
         """
@@ -52,7 +50,7 @@ class PCASVMClassifier:
         :param X_train: 原始训练集特征
         :param y_train: 训练集标签
         """
-        X_train_pca, _ = self.apply_pca(X_train, X_train)  # 只在训练集上 fit PCA
+        X_train_pca = self.apply_pca(X_train)  # 只在训练集上 fit PCA
         self.model.fit(X_train_pca, y_train)
 
     def predict(self, X_val):
@@ -73,8 +71,8 @@ class PCASVMClassifier:
         :param y_val: 验证集标签
         """
         y_pred = self.predict(X_val)
-        print("Accuracy:", accuracy_score(y_val, y_pred))
-        print("\nClassification Report:")
+        print("SVM Accuracy:", accuracy_score(y_val, y_pred))
+        print("\nSVM Classification Report:")
         print(classification_report(y_val, y_pred))
         return y_pred
 
